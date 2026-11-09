@@ -1,0 +1,23 @@
+{
+  "_comment": "此技術棧額外的權限與 hooks，init.py 會與 core/.claude/settings.json 合併（底線開頭的鍵會被忽略）",
+  "permissions": {
+    "allow": [
+      "Bash(<測試指令>:*)",
+      "Bash(<lint 指令>:*)"
+    ],
+    "deny": []
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/<format_script>.py"
+          }
+        ]
+      }
+    ]
+  }
+}

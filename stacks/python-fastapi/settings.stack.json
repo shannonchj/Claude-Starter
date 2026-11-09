@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv sync)",
+      "Bash(uv run pytest:*)",
+      "Bash(uv run ruff:*)",
+      "Bash(uv run mypy:*)",
+      "Bash(uv run alembic upgrade:*)",
+      "Bash(uv run alembic revision:*)",
+      "Bash(uv run alembic history:*)",
+      "Bash(uv run alembic current:*)",
+      "Bash(docker compose up -d db)",
+      "Bash(docker compose ps:*)"
+    ],
+    "deny": [
+      "Bash(uv run alembic downgrade:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/ruff_format.py"
+          }
+        ]
+      }
+    ]
+  }
+}

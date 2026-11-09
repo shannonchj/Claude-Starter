@@ -1,0 +1,6 @@
+# CLAUDE.local.md（個人專案規則，不進 git）
+<!-- 複製為 CLAUDE.local.md 後使用；init.py 已將其加入 .gitignore -->
+
+- 我的本地 DB 連在 localhost:5433（非預設 port）
+- 我偏好一次只改一個檔案，改完先讓我看 diff
+- 本機沒有安裝 docker，需要時提醒我
