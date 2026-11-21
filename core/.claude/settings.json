@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/block_dangerous_bash.py"
+            "command": "python3 -X utf8 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/block_dangerous_bash.py"
           }
         ]
       },
@@ -35,7 +35,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect_files.py"
+            "command": "python3 -X utf8 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect_files.py"
           }
         ]
       }
