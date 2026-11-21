@@ -21,7 +21,7 @@ claude-starter/
 │   │   ├── settings.json         # 通用權限 + 安全 hooks
 │   │   ├── hooks/
 │   │   │   ├── block_dangerous_bash.py   # 擋 rm -rf、push main、force push…
-│   │   │   └── protect_files.py          # 擋讀寫 .env / 金鑰、擋手改 lockfile
+│   │   │   └── protect_files.py          # 擋讀寫 .env / 金鑰（.env.example 可讀寫）、擋手改 lockfile
 │   │   ├── skills/
 │   │   │   ├── plan-feature/SKILL.md     # /plan-feature 需求 → 規格 → 計畫
 │   │   │   ├── review/SKILL.md           # /review 交給 code-reviewer 審查 diff
