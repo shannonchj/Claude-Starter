@@ -3,6 +3,7 @@
 
 用法：
     python3 init.py --list
+    python3 init.py <target-dir> [--force]            # 使用預設技術棧
     python3 init.py <stack> <target-dir> [--force]
 """
 import argparse
@@ -15,6 +16,7 @@ ROOT = Path(__file__).resolve().parent
 CORE = ROOT / "core"
 STACKS = ROOT / "stacks"
 MARKER = "<!-- @@STACK@@ -->"
+DEFAULT_STACK = "python-fastapi"
 # Windows 通常沒有 python3 指令，產生 settings.json 時改用 python
 PYTHON_CMD = "python" if sys.platform == "win32" else "python3"
 
@@ -103,8 +105,10 @@ def write_if_allowed(path: Path, content: str, force: bool, label: str):
 
 def main():
     parser = argparse.ArgumentParser(description="claude-starter 初始化")
-    parser.add_argument("stack", nargs="?", help="技術棧名稱（stacks/ 下的資料夾）")
-    parser.add_argument("target", nargs="?", help="目標專案路徑")
+    parser.add_argument(
+        "args", nargs="*", metavar="[stack] target",
+        help=f"技術棧名稱（stacks/ 下的資料夾，省略時為 {DEFAULT_STACK}）與目標專案路徑",
+    )
     parser.add_argument("--force", action="store_true", help="覆蓋已存在的檔案")
     parser.add_argument("--list", action="store_true", help="列出可用技術棧")
     args = parser.parse_args()
@@ -112,10 +116,14 @@ def main():
     if args.list:
         print("可用技術棧：")
         for name in available_stacks():
-            print(f"  - {name}")
+            print(f"  - {name}{'（預設）' if name == DEFAULT_STACK else ''}")
         return
 
-    if not args.stack or not args.target:
+    if len(args.args) == 1:
+        args.stack, args.target = DEFAULT_STACK, args.args[0]
+    elif len(args.args) == 2:
+        args.stack, args.target = args.args
+    else:
         parser.print_help()
         sys.exit(1)
 

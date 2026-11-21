@@ -59,11 +59,14 @@ claude-starter/
 # 列出可用技術棧
 python3 init.py --list
 
-# 套用到新專案（已存在的檔案不會被覆蓋）
-python3 init.py python-fastapi ../my-project
+# 套用到新專案（預設技術棧 python-fastapi，已存在的檔案不會被覆蓋）
+python3 init.py ../my-project
+
+# 指定其他技術棧
+python3 init.py <stack> ../my-project
 
 # 強制覆蓋既有檔案
-python3 init.py python-fastapi ../my-project --force
+python3 init.py ../my-project --force
 ```
 
 `init.py` 會做這些事：
