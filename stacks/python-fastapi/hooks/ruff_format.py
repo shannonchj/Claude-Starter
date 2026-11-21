@@ -4,6 +4,7 @@
 格式化交給工具處理，就不需要在 CLAUDE.md 寫格式規則，也能節省 token。
 找不到 uv 或 ruff 時直接略過，不會中斷 Claude 的工作。
 """
+
 import json
 import shutil
 import subprocess
@@ -28,7 +29,7 @@ def main():
 
     for args in (["format", path], ["check", "--fix", "--quiet", path]):
         try:
-            subprocess.run(base + args, capture_output=True, timeout=30)
+            subprocess.run(base + args, capture_output=True, timeout=30, check=False)
         except (subprocess.TimeoutExpired, OSError):
             pass
     sys.exit(0)

@@ -23,7 +23,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/ruff_format.py"
+            "command": "python3 -X utf8 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/ruff_format.py"
           }
         ]
       }

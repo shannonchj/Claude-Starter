@@ -1,0 +1,15 @@
+# Claude Code 個人設定
+CLAUDE.local.md
+.claude/settings.local.json
+
+# 機密
+.env
+.env.*
+!.env.example
+
+# 編輯器 / 作業系統
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

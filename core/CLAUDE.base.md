@@ -17,6 +17,7 @@
 - 進度與待辦：`docs/progress.md`
 - 功能規格：`docs/specs/`
 - 架構決策紀錄（ADR）：`docs/decisions/`
+- PR review 規則（/review 與 GitHub review 共用）：`REVIEW.md`
 
 ## Git 流程
 - 分支命名：`feat/<主題>`、`fix/<主題>`、`chore/<主題>`
@@ -29,9 +30,12 @@
 - 不要手動編輯 lockfile
 - 不要加多餘註解，不要新增未被要求的功能
 - 不確定需求時先提問，不要自行假設
+- 不可猜測 API、設定或參數；查不到就列出待確認事項
+- 沒有實際執行過的測試，不可回報為通過
 
 ## 工作方式
 - 較大的改動先用 Plan mode 提出計畫，我確認後再實作
+- 一次只做一個可驗收的功能；改了規格、測試流程或架構，要同步更新 `docs/`
 - 完成任務前，必須執行本檔「常用指令」中的測試與 lint，並確認全部通過
 - 長任務：開始時讀 `docs/progress.md`，告一段落時用 `/progress` 更新
 - 大範圍搜尋程式碼交給 researcher subagent，只回報結論

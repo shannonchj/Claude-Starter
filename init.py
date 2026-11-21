@@ -15,7 +15,8 @@ ROOT = Path(__file__).resolve().parent
 CORE = ROOT / "core"
 STACKS = ROOT / "stacks"
 MARKER = "<!-- @@STACK@@ -->"
-GITIGNORE_LINES = ["CLAUDE.local.md", ".claude/settings.local.json"]
+# Windows 通常沒有 python3 指令，產生 settings.json 時改用 python
+PYTHON_CMD = "python" if sys.platform == "win32" else "python3"
 
 
 def available_stacks():
@@ -60,6 +61,37 @@ def merge_settings(base: dict, extra: dict) -> dict:
     return result
 
 
+def merge_gitignore(target: Path, sources):
+    """把各來源檔中目標專案還沒有的規則，連同所屬註解一起追加到 .gitignore。"""
+    gitignore = target / ".gitignore"
+    lines = gitignore.read_text(encoding="utf-8").splitlines() if gitignore.exists() else []
+    added = 0
+    for src in sources:
+        if not src.exists():
+            continue
+        block, pending_comments = [], []
+        for line in src.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                pending_comments = []
+            elif line.startswith("#"):
+                pending_comments.append(line)
+            elif line not in lines and line not in block:
+                comments = [c for c in pending_comments if c not in block]
+                if comments and block:
+                    block.append("")
+                block.extend(comments)
+                pending_comments = []
+                block.append(line)
+                added += 1
+        if block:
+            if lines and lines[-1].strip():
+                lines.append("")
+            lines.extend(block)
+    if added:
+        gitignore.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        print(f"  更新：.gitignore（新增 {added} 條規則）")
+
+
 def write_if_allowed(path: Path, content: str, force: bool, label: str):
     if path.exists() and not force:
         print(f"  略過（已存在）：{label}")
@@ -98,7 +130,7 @@ def main():
 
     # 1. 複製 core（CLAUDE.base.md 與 settings.json 另外處理）
     copied, skipped = copy_tree(
-        CORE, target, args.force, skip={"CLAUDE.base.md", ".claude/settings.json"}
+        CORE, target, args.force, skip={"CLAUDE.base.md", ".claude/settings.json", ".gitignore"}
     )
     for f in copied:
         print(f"  複製：{f}")
@@ -119,9 +151,11 @@ def main():
         settings = merge_settings(
             settings, json.loads(stack_settings_path.read_text(encoding="utf-8"))
         )
+    settings_text = json.dumps(settings, indent=2, ensure_ascii=False) + "\n"
+    settings_text = settings_text.replace('"python3 ', f'"{PYTHON_CMD} ')
     write_if_allowed(
         target / ".claude" / "settings.json",
-        json.dumps(settings, indent=2, ensure_ascii=False) + "\n",
+        settings_text,
         args.force,
         ".claude/settings.json",
     )
@@ -142,21 +176,14 @@ def main():
         for h in hooks_dir.glob("*.py"):
             h.chmod(h.stat().st_mode | 0o111)
 
-    # 5. .gitignore
-    gitignore = target / ".gitignore"
-    existing = gitignore.read_text(encoding="utf-8").splitlines() if gitignore.exists() else []
-    missing = [line for line in GITIGNORE_LINES if line not in existing]
-    if missing:
-        with gitignore.open("a", encoding="utf-8") as f:
-            if existing and existing[-1].strip():
-                f.write("\n")
-            f.write("# Claude Code 個人設定\n" + "\n".join(missing) + "\n")
-        print(f"  更新：.gitignore（{', '.join(missing)}）")
+    # 5. .gitignore：合併 core 與 stack 的規則，只追加目標專案缺少的行
+    merge_gitignore(target, [CORE / ".gitignore", stack_dir / "gitignore"])
 
     print("\n完成。接下來：")
-    print("  1. 編輯 CLAUDE.md，替換 <...> 佔位內容")
+    print("  1. 編輯 CLAUDE.md 與 REVIEW.md，替換 <...> 與 TODO 佔位內容")
     print("  2. 在專案中啟動 claude，執行 /init 補充並人工審核")
     print("  3. 執行 /hooks 確認 hooks 已載入")
+    print("  4. 使用 GitHub PR review 需在 repo secrets 設定 CLAUDE_CODE_OAUTH_TOKEN")
 
 
 if __name__ == "__main__":
