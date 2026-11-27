@@ -21,7 +21,7 @@ claude-starter/
 │   │   ├── settings.json         # 通用權限 + 安全 hooks
 │   │   ├── hooks/
 │   │   │   ├── block_dangerous_bash.py   # 擋 rm -rf、push main、force push…
-│   │   │   └── protect_files.py          # 擋讀寫 .env / 金鑰、擋手改 lockfile
+│   │   │   └── protect_files.py          # 擋讀寫 .env / 金鑰（.env.example 可讀寫）、擋手改 lockfile
 │   │   ├── skills/
 │   │   │   ├── plan-feature/SKILL.md     # /plan-feature 需求 → 規格 → 計畫
 │   │   │   ├── review/SKILL.md           # /review 交給 code-reviewer 審查 diff
@@ -59,11 +59,14 @@ claude-starter/
 # 列出可用技術棧
 python3 init.py --list
 
-# 套用到新專案（已存在的檔案不會被覆蓋）
-python3 init.py python-fastapi ../my-project
+# 套用到新專案（預設技術棧 python-fastapi，已存在的檔案不會被覆蓋）
+python3 init.py ../my-project
+
+# 指定其他技術棧
+python3 init.py <stack> ../my-project
 
 # 強制覆蓋既有檔案
-python3 init.py python-fastapi ../my-project --force
+python3 init.py ../my-project --force
 ```
 
 `init.py` 會做這些事：
