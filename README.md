@@ -1,14 +1,16 @@
 # claude-starter
 
 Claude Code 協作開發的基礎模板。分成「通用核心（core）」與「技術棧（stacks）」兩層，
-用 `init.py` 組合後複製到任何新專案。
+用 `claude-starter` 指令組合後複製到任何專案。
 
 ## 目錄結構
 
 ```text
 claude-starter/
 ├── README.md
-├── init.py                       # 初始化腳本：core + 指定 stack → 目標專案
+├── pyproject.toml                # 打包設定：註冊 claude-starter 指令，core/、stacks/ 打包為模板
+├── init.py                       # 舊用法相容入口（不需安裝）
+├── src/claude_starter/cli.py     # 指令本體：core + 指定 stack → 目標專案
 ├── core/                         # 通用，所有專案共用
 │   ├── CLAUDE.base.md            # CLAUDE.md 骨架（stack 同名段落取代佔位，其餘插入 @@STACK@@）
 │   ├── CLAUDE.local.md.example   # 個人專案規則範例（不進 git）
@@ -61,23 +63,47 @@ claude-starter/
 
 ## 快速開始
 
-需求：Python 3.8+（init.py 與 hooks 都用 Python 撰寫，無第三方套件）；GitHub Actions 上的 review 腳本使用 Python 3.10。
+需求：[uv](https://docs.astral.sh/uv/)、Python 3.8+（指令與 hooks 都用 Python 撰寫，無第三方套件）；GitHub Actions 上的 review 腳本使用 Python 3.10。
+
+### 安裝成指令（建議）
 
 ```bash
-# 列出可用技術棧
-python3 init.py --list
+# 安裝一次（只寫入使用者目錄：uv 的 tools 資料夾與 ~/.local/bin，不影響系統 Python）
+uv tool install git+https://github.com/shannonchj/Claude-Starter
 
-# 套用到新專案（預設技術棧 python-fastapi，已存在的檔案不會被覆蓋）
-python3 init.py ../my-project
+# 在專案資料夾中執行
+cd my-project
+claude-starter                          # 預設技術棧 python-fastapi，已存在的檔案不會被覆蓋
+claude-starter --stack <stack>          # 指定技術棧
+claude-starter --list                   # 列出可用技術棧
+claude-starter --force                  # 強制覆蓋既有檔案
+claude-starter --target ../other        # 套用到其他資料夾
 
-# 指定其他技術棧
-python3 init.py <stack> ../my-project
+# 模板更新後
+uv tool upgrade claude-starter
 
-# 強制覆蓋既有檔案
-python3 init.py ../my-project --force
+# 移除
+uv tool uninstall claude-starter
 ```
 
-`init.py` 會做這些事：
+要固定版本時，在網址後加 tag 或分支：`git+https://github.com/shannonchj/Claude-Starter@v0.1.0`。
+
+### 不安裝、一次性執行
+
+```bash
+cd my-project
+uvx --from git+https://github.com/shannonchj/Claude-Starter claude-starter --stack python-fastapi
+```
+
+### 舊用法（clone 本 repo 後執行，不需 uv）
+
+```bash
+python3 init.py --list
+python3 init.py ../my-project                # 預設技術棧
+python3 init.py <stack> ../my-project [--force]
+```
+
+### 會做哪些事
 
 1. 複製 `core/` 全部內容到目標專案
 2. 組合 `CLAUDE.md`：`CLAUDE.stack.md` 中與 `CLAUDE.base.md` 同名的 `##` 段落（「環境與指令」「目錄」）取代 base 的佔位內容，其他段落（「技術棧規則」）插入 `@@STACK@@` 位置
@@ -122,7 +148,9 @@ python3 init.py ../my-project --force
 3. 在 `settings.stack.json` 加入該技術棧的 `permissions.allow` 與 hooks
 4. 在 `gitignore` 列出該技術棧的產物與快取；在 `review-scope.txt` 設定核心程式目錄與 lockfile
 5. 在 `hooks/` 放格式化等腳本（參考 `python-fastapi/hooks/ruff_format.py`）
-6. 需要時加入 `skills/`、`agents/` 子資料夾，init.py 會自動複製
+6. 需要時加入 `skills/`、`agents/` 子資料夾，`claude-starter` 會自動複製
+7. 本機測試：`python3 init.py <new-stack> <暫存資料夾>`（直接讀 repo 內的模板，不用重新安裝）
+8. 合併進 main 後，各台電腦執行 `uv tool upgrade claude-starter` 取得新模板；要發布固定版本時，更新 `src/claude_starter/__init__.py` 的 `__version__` 並打 git tag
 
 ## 節省 token 的原則（維護模板時請遵守）
 

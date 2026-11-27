@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "claude-starter"
+dynamic = ["version"]
+description = "Claude Code 協作開發模板：core + 技術棧組合後套用到專案"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = []
+
+[project.scripts]
+claude-starter = "claude_starter.cli:main"
+
+[tool.hatch.version]
+path = "src/claude_starter/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/claude_starter"]
+
+# 模板在 repo 根目錄維護，打包時放進套件的 templates/
+[tool.hatch.build.targets.wheel.force-include]
+"core" = "claude_starter/templates/core"
+"stacks" = "claude_starter/templates/stacks"
