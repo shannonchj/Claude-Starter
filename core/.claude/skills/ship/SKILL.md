@@ -11,7 +11,7 @@ argument-hint: "[PR 標題或補充說明]"
 
 1. **分支檢查**：執行 `git branch --show-current`。
    - 如果在 main / master：依變更內容建立 `feat/<slug>` 或 `fix/<slug>` 分支並切換過去。
-2. **品質檢查**：依序執行 CLAUDE.md「常用指令」中的格式化、lint、型別檢查、測試。
+2. **品質檢查**：依序執行 CLAUDE.md「環境與指令」中的格式化、lint、型別檢查、測試。
    - 有失敗時先修正，修完重跑，全部通過才繼續。
 3. **確認變更**：用 `git status` 和 `git diff --stat` 檢查。
    - 列出這次要 commit 的檔案，排除不相關的檔案和暫存檔。

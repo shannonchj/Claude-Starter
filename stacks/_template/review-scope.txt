@@ -1,0 +1,8 @@
+# 注入 REVIEW.md 的 review-scope 區塊；格式見 REVIEW.md「Review coverage」
+# 每行 `<層級或 exclude>: <pattern>`，由上往下第一個符合的生效，最後一定要有 `2: *`
+exclude: <lockfile>
+1: <核心程式目錄>/*
+3: tests/*
+4: docs/*
+4: *.md
+2: *
