@@ -11,8 +11,8 @@ argument-hint: "[base 分支，預設 main]"
    - 否則審查 `git diff ${ARGUMENTS:-main}...HEAD`
    - 先用 `git diff --stat` 看改了哪些檔案；diff 很大時依目錄分批（例如 `src/`、`tests/`），每批各交給一個 code-reviewer，不要讓單一 reviewer 讀不完
 2. 把 diff 範圍交給 **code-reviewer** subagent 審查，主對話不要自己逐行讀完整個 diff。嚴重度、Nit 上限與排除項目依根目錄 `REVIEW.md`（與 GitHub 上的 Claude review 共用）。
-3. 主對話逐項核對 reviewer 回報的問題：對照實際程式碼與相關 `docs/`，推翻不了的才列入結果；被推翻的列在「已排除」並寫一句理由。
-4. 執行 CLAUDE.md「常用指令」中的 lint 與測試，記錄結果。
+3. 主對話逐項核對 reviewer 回報的問題：對照實際程式碼與相關文件，推翻不了的才列入結果；被推翻的列在「已排除」並寫一句理由。
+4. 執行 CLAUDE.md「環境與指令」中的 lint 與測試，記錄結果。
 5. 依下列格式回報，沒有項目的區塊就省略：
 
 ```

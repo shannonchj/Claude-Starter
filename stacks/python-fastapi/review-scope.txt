@@ -1,0 +1,8 @@
+# 注入 REVIEW.md 的 review-scope 區塊；格式見 REVIEW.md「Review coverage」
+exclude: uv.lock
+1: app/*
+1: alembic/*
+3: tests/*
+4: docs/*
+4: *.md
+2: *
